@@ -8,6 +8,7 @@ export const hooks: Hooks<ProductService> = {
     // getProduct(...) { /* throw to refuse the call */ },
     // createProduct(...) { /* throw to refuse the call */ },
     // updateProduct(...) { /* throw to refuse the call */ },
+    // patchProduct(...) { /* throw to refuse the call */ },
     // deleteProduct(...) { /* throw to refuse the call */ },
   },
   after: {
@@ -15,6 +16,7 @@ export const hooks: Hooks<ProductService> = {
     // getProduct(result, ...) { return result; },
     // createProduct(result, ...) { return result; },
     // updateProduct(result, ...) { return result; },
+    // patchProduct(result, ...) { return result; },
     // deleteProduct(result, ...) { return result; },
   },
 };

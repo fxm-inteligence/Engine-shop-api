@@ -1,6 +1,6 @@
 import { strict as assert } from "node:assert";
 import { test } from "node:test";
-import { NotFoundException } from "@nestjs/common";
+import { NotFoundException, UnprocessableEntityException } from "@nestjs/common";
 import type { ProductRepository } from "./product-repository.repository";
 import { ProductService } from "./product-service.service";
 
@@ -64,19 +64,19 @@ test("getProduct answers with the stored record", async () => {
 
 test("getProduct answers 404 for an id that does not exist", async () => {
   const { service } = setup();
-  await assert.rejects(() => service.getProduct("missing-id"), NotFoundException);
+  await assert.rejects(async () => service.getProduct("missing-id"), NotFoundException);
 });
 
 test("updateProduct changes the stored record", async () => {
   const { service, rows } = setup();
   const created = await service.createProduct(sample() as never);
-  await service.updateProduct(created.id, { name: "updated" } as never);
+  await service.updateProduct(created.id, { name: "updated", price: 1.5, stock: 1, available: true, releasedAt: "2024-01-01T00:00:00.000Z", createdAt: "2024-01-01T00:00:00.000Z" } as never);
   assert.equal(rows.get(created.id)?.name, "updated");
 });
 
 test("updateProduct answers 404 for an id that does not exist", async () => {
   const { service } = setup();
-  await assert.rejects(() => service.updateProduct("missing-id", { name: "updated" } as never), NotFoundException);
+  await assert.rejects(async () => service.updateProduct("missing-id", { name: "updated", price: 1.5, stock: 1, available: true, releasedAt: "2024-01-01T00:00:00.000Z", createdAt: "2024-01-01T00:00:00.000Z" } as never), NotFoundException);
 });
 
 test("deleteProduct removes the record", async () => {
@@ -88,5 +88,29 @@ test("deleteProduct removes the record", async () => {
 
 test("deleteProduct answers 404 for an id that does not exist", async () => {
   const { service } = setup();
-  await assert.rejects(() => service.deleteProduct("missing-id"), NotFoundException);
+  await assert.rejects(async () => service.deleteProduct("missing-id"), NotFoundException);
+});
+
+test("createProduct refuses a request that breaks the rule name required", async () => {
+  const { service, rows } = setup();
+  await assert.rejects(async () => service.createProduct({ price: 1.5, stock: 1, available: true, releasedAt: "2024-01-01T00:00:00.000Z", createdAt: "2024-01-01T00:00:00.000Z" } as never), UnprocessableEntityException);
+  assert.equal(rows.size, 0);
+});
+
+test("createProduct refuses a request that breaks the rule name minLength 2", async () => {
+  const { service, rows } = setup();
+  await assert.rejects(async () => service.createProduct({ price: 1.5, stock: 1, available: true, releasedAt: "2024-01-01T00:00:00.000Z", createdAt: "2024-01-01T00:00:00.000Z", name: "x" } as never), UnprocessableEntityException);
+  assert.equal(rows.size, 0);
+});
+
+test("createProduct refuses a request that breaks the rule price min 0", async () => {
+  const { service, rows } = setup();
+  await assert.rejects(async () => service.createProduct({ name: "sample", stock: 1, available: true, releasedAt: "2024-01-01T00:00:00.000Z", createdAt: "2024-01-01T00:00:00.000Z", price: -1 } as never), UnprocessableEntityException);
+  assert.equal(rows.size, 0);
+});
+
+test("createProduct refuses a request that breaks the rule stock min 0", async () => {
+  const { service, rows } = setup();
+  await assert.rejects(async () => service.createProduct({ name: "sample", price: 1.5, available: true, releasedAt: "2024-01-01T00:00:00.000Z", createdAt: "2024-01-01T00:00:00.000Z", stock: -1 } as never), UnprocessableEntityException);
+  assert.equal(rows.size, 0);
 });

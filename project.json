@@ -674,12 +674,76 @@
                 "type": "Boolean",
                 "value": false,
                 "defaultValue": false
+              },
+              {
+                "name": "rules",
+                "type": "String",
+                "value": "name required\nname minLength 2\nprice min 0\nstock min 0"
+              },
+              {
+                "name": "queries",
+                "type": "String",
+                "value": "available: available=true, sort name\nout: stock=0"
               }
             ],
             "metadata": {
               "version": "0.0.0",
               "createdAt": "2026-10-21T13:43:42.277Z",
               "updatedAt": "2026-10-21T13:43:42.277Z",
+              "tags": []
+            }
+          },
+          {
+            "id": "0a9553e2-4ef8-4ed3-840a-cfab021a56cf",
+            "category": "API",
+            "type": "Logging",
+            "properties": [
+              {
+                "name": "name",
+                "type": "String",
+                "value": "Logging"
+              },
+              {
+                "name": "level",
+                "type": "Enum",
+                "value": "info",
+                "defaultValue": "info"
+              }
+            ],
+            "metadata": {
+              "version": "0.0.0",
+              "createdAt": "2026-11-11T13:51:11.453Z",
+              "updatedAt": "2026-11-11T13:51:11.453Z",
+              "tags": []
+            }
+          },
+          {
+            "id": "5cd17615-8d3e-48af-aeb4-91b282ad78fd",
+            "category": "API",
+            "type": "Metrics",
+            "properties": [
+              {
+                "name": "name",
+                "type": "String",
+                "value": "Metrics"
+              },
+              {
+                "name": "route",
+                "type": "String",
+                "value": "/metrics",
+                "defaultValue": "/metrics"
+              },
+              {
+                "name": "tracing",
+                "type": "Boolean",
+                "value": false,
+                "defaultValue": false
+              }
+            ],
+            "metadata": {
+              "version": "0.0.0",
+              "createdAt": "2026-11-11T13:51:11.453Z",
+              "updatedAt": "2026-11-11T13:51:11.453Z",
               "tags": []
             }
           }
@@ -713,6 +777,14 @@
           "2c2faebe-495d-4d83-a704-2725abdaa32d": {
             "x": 0,
             "y": 540
+          },
+          "0a9553e2-4ef8-4ed3-840a-cfab021a56cf": {
+            "x": 900,
+            "y": 600
+          },
+          "5cd17615-8d3e-48af-aeb4-91b282ad78fd": {
+            "x": 900,
+            "y": 800
           }
         },
         "hierarchy": {},

@@ -1,9 +1,10 @@
-import { TOTAL_COUNT_HEADER, parseListQuery } from "../list-query";
+import { TOTAL_COUNT_HEADER, parseListQuery, withNamedQuery } from "../list-query";
 import { AdminKeyGuard } from "./admin-key.guard";
 import { CreateProductRequestDto } from "./dto/create-product-request.dto";
+import { PatchProductRequestDto } from "./dto/patch-product-request.dto";
 import { UpdateProductRequestDto } from "./dto/update-product-request.dto";
 import { ProductService } from "./product-service.service";
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 
@@ -14,7 +15,7 @@ export class ProductServiceController {
 
   @Get("/products")
   async listProducts(@Query() query: Record<string, unknown>, @Res({ passthrough: true }) response: Response) {
-    const page = await this.productService.listProducts(parseListQuery(query));
+    const page = await this.productService.listProducts(parseListQuery(withNamedQuery(query, { "available": { "available": "true", "sort": "name" }, "out": { "stock": "0" } })));
     response.setHeader(TOTAL_COUNT_HEADER, page.total);
     return page.items;
   }
@@ -33,6 +34,12 @@ export class ProductServiceController {
   @Put("/products/:id")
   updateProduct(@Param("id") id: string, @Body() dto: UpdateProductRequestDto) {
     return this.productService.updateProduct(id, dto);
+  }
+
+  @UseGuards(AdminKeyGuard)
+  @Patch("/products/:id")
+  patchProduct(@Param("id") id: string, @Body() dto: PatchProductRequestDto) {
+    return this.productService.patchProduct(id, dto);
   }
 
   @UseGuards(AdminKeyGuard)
